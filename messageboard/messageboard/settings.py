@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'board.apps.BoardConfig',
+    'board.apps.BoardConfig',  # Для упрощения дальнейшей работы с этим классом
 ]
 
 MIDDLEWARE = [
