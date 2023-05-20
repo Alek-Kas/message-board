@@ -38,5 +38,5 @@ class Announce(models.Model):
 class Reply(models.Model):
     author = models.OneToOneField(User, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
-    acceptable = models.BooleanField(bool=False)
+    is_acceptable = models.BooleanField(default=False)
     announce = models.ForeignKey(Announce, on_delete=models.CASCADE)
