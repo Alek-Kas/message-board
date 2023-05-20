@@ -1,9 +1,18 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
 
+from .models import Announce
+
+menu = ['О сайте', 'Добавить объявление', 'Поиск своих объявлений', 'Войти']
+
 
 def index(request):
-    return HttpResponse('Страница приложения board')
+    posts = Announce.objects.all()
+    return render(request, 'board/index.html', {'posts': posts, 'menu': menu, 'title': 'Главная страница'})
+
+
+def about(request):
+    return render(request, 'board/about.html', {'menu': menu, 'title': 'О сайте'})
 
 
 def announcement(request, ann_id):

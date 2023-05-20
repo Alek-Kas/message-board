@@ -34,6 +34,9 @@ class Announce(models.Model):
     time_update = models.DateTimeField(auto_now=True)
     categories = models.CharField(max_length=2, choices=CATEGORIES_CHOICES)
 
+    def __str__(self):
+        return self.title
+
 
 class Reply(models.Model):
     author = models.OneToOneField(User, on_delete=models.CASCADE)
