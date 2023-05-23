@@ -27,7 +27,7 @@ class Announce(models.Model):
         (POTION_MAKERS, 'Зельевары'),
         (SPELL_MASTERS, 'Мастера заклинаний'),
     ]
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     content = models.TextField(blank=True)
     time_create = models.DateTimeField(auto_created=True)
