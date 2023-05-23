@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 
 
 class Announce(models.Model):
@@ -30,16 +31,27 @@ class Announce(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     content = models.TextField(blank=True)
-    time_create = models.DateTimeField(auto_created=True)
+    time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     categories = models.CharField(max_length=2, choices=CATEGORIES_CHOICES)
+    # reply = models.ForeignKey('Reply', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        # return reverse('post', kwargs={'post_id': self.pk})
+        return reverse('post', kwargs={'post_id': self.pk, 'cat_id': self.categories})
+
 
 class Reply(models.Model):
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(blank=True)
     is_acceptable = models.BooleanField(default=False)
     announce = models.ForeignKey(Announce, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.content
+
+    def get_absolute_url(self):
+        return reverse('reply', kwargs={'rep_id': self.pk})

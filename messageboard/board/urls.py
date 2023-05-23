@@ -1,11 +1,13 @@
 from django.urls import path, re_path
 
-from .views import index, announcement, archive, about
+from .views import *
 
 urlpatterns = [
     path('', index, name='home'),
     path('about/', about, name='about'),
-
-    # path('announce/<int:ann_id>', announcement),
-    # re_path(r'^archive/(?P<year>[0-9]{4})/', archive)
+    path('add_announce/', add_announce, name='add_announce'),
+    path('find_announce/', find_announce, name='find_announce'),
+    path('login/', login, name='login'),
+    path('post/<int:post_id/', show_post, name='post'),
+    path('post/<str:cat_id/', show_category, name='category'),
 ]
