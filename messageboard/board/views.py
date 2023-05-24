@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 
 from .models import Announce
 
-# menu = ['О сайте', 'Добавить объявление', 'Поиск своих объявлений', 'Войти']
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
     {'title': 'Добавить объявление', 'url_name': 'add_announce'},
@@ -12,25 +11,24 @@ menu = [
 ]
 
 cats = [
-    (TANKS, 'Танки'),
-    (HEALERS, 'Хилы'),
-    (DD, 'ДД'),
-    (MERCHANTS, 'Торговцы'),
-    (GUILD_MASTERS, 'Гилдмастеры'),
-    (QUEST_GIVERS, 'Квестгиверы'),
-    (BLACKSMITHS, 'Кузнецы'),
-    (TANNERS, 'Кожевники'),
-    (POTION_MAKERS, 'Зельевары'),
-    (SPELL_MASTERS, 'Мастера заклинаний'),
+    {'title': 'Танки', 'url_name': 'tanks'},
+    {'title': 'Хилы', 'url_name': 'healers'},
+    {'title': 'ДД', 'url_name': 'dd'},
+    {'title': 'Гилдмастеры', 'url_name': 'guild_masters'},
+    {'title': 'Квестгиверы', 'url_name': 'quest_givers'},
+    {'title': 'Кузнецы', 'url_name': 'blacksmiths'},
+    {'title': 'Кожевники', 'url_name': 'tanners'},
+    {'title': 'Зельевары', 'url_name': 'potion_makers'},
+    {'title': 'Мастера заклинаний', 'url_name': 'spell_masters'},
+    {'title': 'Торговцы', 'url_name': 'merchants'},
 ]
+
 
 def index(request):
     posts = Announce.objects.all()
-    # cats = Announce.categories.all()
-
     context = {
         'posts': posts,
-        # 'cats': cats,
+        'cats': cats,
         'menu': menu,
         'title': 'Главная страница',
         'cat_selected': 0,
@@ -39,7 +37,7 @@ def index(request):
 
 
 def about(request):
-    return render(request, 'board/about.html', {'menu': menu, 'title': 'О сайте'})
+    return render(request, 'board/about.html', {'menu': menu, 'cats': cats, 'title': 'О сайте'})
 
 
 def add_announce(request):
@@ -63,6 +61,14 @@ def show_post(request, post_id):
 
 
 def show_category(request, cat_id):
-    return HttpResponse(f'Отображение категории с id = {cat_id}')
-
-
+    posts = Announce.objects.filter(cat_id=cat_id)
+    if len(posts) == 0:
+        raise Http404()
+    context = {
+        'posts': posts,
+        'cats': cats,
+        'menu': menu,
+        'title': 'Отображение по рубрикам',
+        'cat_selected': cat_id,
+    }
+    return render(request, 'board/index.html', context=context)
