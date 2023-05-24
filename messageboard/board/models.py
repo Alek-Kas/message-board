@@ -21,7 +21,7 @@ class Announce(models.Model):
         (HEALERS, 'Хилы'),
         (DD, 'ДД'),
         (MERCHANTS, 'Торговцы'),
-        (GUILD_MASTERS, 'Гилдмастеры'),
+        (GUILD_MASTERS, 'Гилдмастера'),
         (QUEST_GIVERS, 'Квестгиверы'),
         (BLACKSMITHS, 'Кузнецы'),
         (TANNERS, 'Кожевники'),

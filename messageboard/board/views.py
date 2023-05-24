@@ -14,7 +14,7 @@ cats = [
     {'title': 'Танки', 'url_name': 'tanks'},
     {'title': 'Хилы', 'url_name': 'healers'},
     {'title': 'ДД', 'url_name': 'dd'},
-    {'title': 'Гилдмастеры', 'url_name': 'guild_masters'},
+    {'title': 'Гилдмастера', 'url_name': 'guild_masters'},
     {'title': 'Квестгиверы', 'url_name': 'quest_givers'},
     {'title': 'Кузнецы', 'url_name': 'blacksmiths'},
     {'title': 'Кожевники', 'url_name': 'tanners'},
@@ -56,8 +56,8 @@ def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
 
 
-def show_post(request, post_id):
-    return HttpResponse(f'Отображение объявления с id = {post_id}')
+def show_post(request, cat_id, post_id):
+    return HttpResponse(f'Отображение объявления с id = {cat_id} & {post_id}')
 
 
 def show_category(request, cat_id):
@@ -72,3 +72,7 @@ def show_category(request, cat_id):
         'cat_selected': cat_id,
     }
     return render(request, 'board/index.html', context=context)
+
+
+def tanks(request):
+    return HttpResponse('Танки')
