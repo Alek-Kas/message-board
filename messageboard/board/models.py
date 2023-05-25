@@ -6,6 +6,7 @@ from django.urls import reverse
 class Announce(models.Model):
     # Tanks, Healers, DD, Merchants, Guild Masters, Quest Givers, Blacksmiths, Tanners, Potion Makers, Spell Masters
     # Танки, Хилы, ДД, Торговцы, Гилдмастеры, Квестгиверы, Кузнецы, Кожевники, Зельевары, Мастера заклинаний
+    """
     TANKS = 'TK'
     HEALERS = 'HL'
     DD = 'DD'
@@ -28,12 +29,14 @@ class Announce(models.Model):
         (POTION_MAKERS, 'Зельевары'),
         (SPELL_MASTERS, 'Мастера заклинаний'),
     ]
+    """
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     content = models.TextField(blank=True)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
-    categories = models.CharField(max_length=2, choices=CATEGORIES_CHOICES)
+    # categories = models.CharField(max_length=2, choices=CATEGORIES_CHOICES)
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT, null=True, verbose_name="Категории")
     # reply = models.ForeignKey('Reply', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -41,7 +44,7 @@ class Announce(models.Model):
 
     def get_absolute_url(self):
         # return reverse('post', kwargs={'post_id': self.pk})
-        return reverse('post', kwargs={'post_id': self.pk, 'cat_id': self.categories})
+        return reverse('post', kwargs={'post_id': self.pk})
 
 
 class Reply(models.Model):
@@ -55,3 +58,13 @@ class Reply(models.Model):
 
     def get_absolute_url(self):
         return reverse('reply', kwargs={'rep_id': self.pk})
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=50, db_index=True, verbose_name="Категория")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'cat_id': self.pk})

@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
 
-from .models import Announce
+from .models import Announce, Category
 
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
@@ -9,10 +9,10 @@ menu = [
     {'title': 'Поиск своих объявлений', 'url_name': 'find_announce'},
     {'title': 'Войти', 'url_name': 'login'},
 ]
-
+"""
 cats = [
-    {'title': 'Танки', 'url_name': 'tanks'},
-    {'title': 'Хилы', 'url_name': 'healers'},
+    {'title': 'Танки', 'url_name': 'tanks', 'url_path': 'tanks'},
+    {'title': 'Хилы', 'url_name': 'healers', 'url_path': 'healers'},
     {'title': 'ДД', 'url_name': 'dd'},
     {'title': 'Гилдмастера', 'url_name': 'guild_masters'},
     {'title': 'Квестгиверы', 'url_name': 'quest_givers'},
@@ -22,10 +22,12 @@ cats = [
     {'title': 'Мастера заклинаний', 'url_name': 'spell_masters'},
     {'title': 'Торговцы', 'url_name': 'merchants'},
 ]
+"""
 
 
 def index(request):
     posts = Announce.objects.all()
+    cats = Category.objects.all()
     context = {
         'posts': posts,
         'cats': cats,
@@ -37,7 +39,7 @@ def index(request):
 
 
 def about(request):
-    return render(request, 'board/about.html', {'menu': menu, 'cats': cats, 'title': 'О сайте'})
+    return render(request, 'board/about.html', {'menu': menu, 'title': 'О сайте'})
 
 
 def add_announce(request):
@@ -56,14 +58,16 @@ def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
 
 
-def show_post(request, cat_id, post_id):
-    return HttpResponse(f'Отображение объявления с id = {cat_id} & {post_id}')
+def show_post(request, post_id):
+    return HttpResponse(f'Отображение объявления с id = {post_id}')
 
 
 def show_category(request, cat_id):
     posts = Announce.objects.filter(cat_id=cat_id)
+    cats = Category.objects.all()
     if len(posts) == 0:
         raise Http404()
+
     context = {
         'posts': posts,
         'cats': cats,
@@ -71,8 +75,5 @@ def show_category(request, cat_id):
         'title': 'Отображение по рубрикам',
         'cat_selected': cat_id,
     }
+
     return render(request, 'board/index.html', context=context)
-
-
-def tanks(request):
-    return HttpResponse('Танки')
