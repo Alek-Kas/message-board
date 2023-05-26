@@ -9,28 +9,14 @@ menu = [
     {'title': 'Поиск своих объявлений', 'url_name': 'find_announce'},
     {'title': 'Войти', 'url_name': 'login'},
 ]
-"""
-cats = [
-    {'title': 'Танки', 'url_name': 'tanks', 'url_path': 'tanks'},
-    {'title': 'Хилы', 'url_name': 'healers', 'url_path': 'healers'},
-    {'title': 'ДД', 'url_name': 'dd'},
-    {'title': 'Гилдмастера', 'url_name': 'guild_masters'},
-    {'title': 'Квестгиверы', 'url_name': 'quest_givers'},
-    {'title': 'Кузнецы', 'url_name': 'blacksmiths'},
-    {'title': 'Кожевники', 'url_name': 'tanners'},
-    {'title': 'Зельевары', 'url_name': 'potion_makers'},
-    {'title': 'Мастера заклинаний', 'url_name': 'spell_masters'},
-    {'title': 'Торговцы', 'url_name': 'merchants'},
-]
-"""
 
 
 def index(request):
     posts = Announce.objects.all()
-    cats = Category.objects.all()
+    # cats = Category.objects.all()
     context = {
         'posts': posts,
-        'cats': cats,
+        # 'cats': cats,
         'menu': menu,
         'title': 'Главная страница',
         'cat_selected': 0,
@@ -64,13 +50,13 @@ def show_post(request, post_id):
 
 def show_category(request, cat_id):
     posts = Announce.objects.filter(cat_id=cat_id)
-    cats = Category.objects.all()
+    # cats = Category.objects.all()
     if len(posts) == 0:
         raise Http404()
 
     context = {
         'posts': posts,
-        'cats': cats,
+        # 'cats': cats,
         'menu': menu,
         'title': 'Отображение по рубрикам',
         'cat_selected': cat_id,
