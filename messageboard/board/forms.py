@@ -1,13 +1,20 @@
 from django import forms
 
-from .models import Category
+from .models import Category, Announce
 
 
-class AddPostForm(forms.Form):
-    # author = forms.
-    title = forms.CharField(max_length=255, label='Заголовок')
-    slug = forms.SlugField(max_length=255, label='URL')
-    content = forms.CharField(widget=forms.Textarea(attrs={'cols': 60, 'rows': 10}), label='Содержимое')
-    cat = forms.ModelChoiceField(
-        queryset=Category.objects.all(), label='Категория', empty_label='Категория не выбрана'
-    )
+class AddPostForm(forms.ModelForm):
+    class Meta:
+        model = Announce
+        # fields = '__all__'  # Для всех полей модели
+        fields = ['author', 'title', 'slug', 'content', 'cat']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-input'}),
+            'content': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cat'].empty_label = 'Категория не выбрана'
+        # TODO: self.fields['author'].empty_label = '' переделать под автора
+

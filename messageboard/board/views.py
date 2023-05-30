@@ -30,21 +30,9 @@ def about(request):
 def add_announce(request):
     if request.method == 'POST':
         form = AddPostForm(request.POST)
-        # form_cls = form.cleaned_data
-        # print(form_cls)
         if form.is_valid():
-            form_cls = form.cleaned_data
-            print(form_cls)
-            try:
-                print('До добавления')
-                Announce.objects.create(**form.cleaned_data)
-                print('Добавление объявы')
-                return redirect('home')
-            except:
-                print('Ошибка добавления')
-                form.add_error(None, 'Ошибка добавления объявления')
-            # except ValueError:
-            #     form.add_error(None, 'Ошибка добавления объявления')
+            form.save()
+            return redirect('home')
     else:
         form = AddPostForm()
     return render(request, 'board/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление объявления'})
