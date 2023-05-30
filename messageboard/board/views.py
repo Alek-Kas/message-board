@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 
+from .forms import AddPostForm
 from .models import Announce, Category
 
 menu = [
@@ -13,10 +14,8 @@ menu = [
 
 def index(request):
     posts = Announce.objects.all()
-    # cats = Category.objects.all()
     context = {
         'posts': posts,
-        # 'cats': cats,
         'menu': menu,
         'title': 'Главная страница',
         'cat_selected': 0,
@@ -29,7 +28,26 @@ def about(request):
 
 
 def add_announce(request):
-    return HttpResponse('Добавление объявления')
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        # form_cls = form.cleaned_data
+        # print(form_cls)
+        if form.is_valid():
+            form_cls = form.cleaned_data
+            print(form_cls)
+            try:
+                print('До добавления')
+                Announce.objects.create(**form.cleaned_data)
+                print('Добавление объявы')
+                return redirect('home')
+            except:
+                print('Ошибка добавления')
+                form.add_error(None, 'Ошибка добавления объявления')
+            # except ValueError:
+            #     form.add_error(None, 'Ошибка добавления объявления')
+    else:
+        form = AddPostForm()
+    return render(request, 'board/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление объявления'})
 
 
 def find_announce(request):
