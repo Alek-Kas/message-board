@@ -39,7 +39,7 @@ def add_announce(request):
 
 
 def find_announce(request):
-    return HttpResponse('Добавление объявления')
+    return HttpResponse('Найти объявления')
 
 
 def login(request):
