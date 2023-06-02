@@ -13,6 +13,7 @@ class Announce(models.Model):
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     time_update = models.DateTimeField(auto_now=True, verbose_name='Время редактирования')
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категории')
+
     # reply = models.ForeignKey('Reply', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -54,7 +55,8 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('category', kwargs={'cat_id': self.pk})
+        # return reverse('category', kwargs={'cat_id': self.pk})
+        return reverse('category', kwargs={'cat_slug': self.slug})
 
     class Meta:
         verbose_name = 'Категория'
