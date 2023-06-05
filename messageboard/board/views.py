@@ -4,41 +4,39 @@ from django.views.generic import ListView, DetailView, CreateView
 
 from .forms import AddPostForm
 from .models import Announce, Category
+from .utils import *
 
-menu = [
-    {'title': 'О сайте', 'url_name': 'about'},
-    {'title': 'Добавить объявление', 'url_name': 'add_announce'},
-    {'title': 'Поиск своих объявлений', 'url_name': 'find_announce'},
-    {'title': 'Войти', 'url_name': 'login'},
-]
+# menu = [
+#     {'title': 'О сайте', 'url_name': 'about'},
+#     {'title': 'Добавить объявление', 'url_name': 'add_announce'},
+#     {'title': 'Поиск своих объявлений', 'url_name': 'find_announce'},
+#     {'title': 'Войти', 'url_name': 'login'},
+# ]
 
 
-class BoardHome(ListView):
+class BoardHome(DataMixin, ListView):
     model = Announce
     template_name = 'board/index.html'
     context_object_name = 'posts'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)  # получаем контекст уже существующий
-        context['menu'] = menu  # добавляем к нему меню из списка выше
-        context['title'] = 'Главная страница'
-        context['cat_selected'] = 0
-        return context
+        c_def = self.get_user_context(title='Главная страница')
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 def about(request):
     return render(request, 'board/about.html', {'menu': menu, 'title': 'О сайте'})
 
 
-class AddAnnounce(CreateView):
+class AddAnnounce(DataMixin, CreateView):
     form_class = AddPostForm
     template_name = 'board/addpage.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)  # получаем контекст уже существующий
-        context['menu'] = menu  # добавляем к нему меню из списка выше
-        context['title'] = 'Добавление объявления'
-        return context
+        c_def = self.get_user_context(title='Добавление объявления')
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 # def add_announce(request):
@@ -64,7 +62,7 @@ def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
 
 
-class ShowPost(DetailView):
+class ShowPost(DataMixin, DetailView):
     model = Announce
     template_name = 'board/post.html'
     slug_url_kwarg = 'post_slug'
@@ -72,23 +70,11 @@ class ShowPost(DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)  # получаем контекст уже существующий
-        context['menu'] = menu  # добавляем к нему меню из списка выше
-        context['title'] = str(context['object'])
-        # context['cat_selected'] = context['posts'][0].cat_id
-        return context
+        c_def = self.get_user_context(title=context['post'])
+        return dict(list(context.items()) + list(c_def.items()))
 
 
-# def show_post(request, post_slug):
-#     post = get_object_or_404(Announce, slug=post_slug)
-#     context = {
-#         'post': post,
-#         'menu': menu,
-#         'cat_selected': post.cat_id,
-#     }
-#     return render(request, 'board/post.html', context=context)
-
-
-class AnnounceCategory(ListView):
+class AnnounceCategory(DataMixin, ListView):
     model = Announce
     template_name = 'board/index.html'
     context_object_name = 'posts'
@@ -99,7 +85,8 @@ class AnnounceCategory(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)  # получаем контекст уже существующий
-        context['menu'] = menu  # добавляем к нему меню из списка выше
-        context['title'] = 'Категория - ' + str(context['posts'][0].cat)
-        context['cat_selected'] = context['posts'][0].cat_id
-        return context
+        c_def = self.get_user_context(
+            title='Категория - ' + str(context['posts'][0].cat),
+            cat_selected=context['posts'][0].cat_id
+        )
+        return dict(list(context.items()) + list(c_def.items()))
