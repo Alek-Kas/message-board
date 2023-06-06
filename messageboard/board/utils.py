@@ -6,7 +6,7 @@ menu = [
     {'title': 'О сайте', 'url_name': 'about'},
     {'title': 'Добавить объявление', 'url_name': 'add_announce'},
     {'title': 'Поиск своих объявлений', 'url_name': 'find_announce'},
-    {'title': 'Войти', 'url_name': 'login'},
+    # {'title': 'Войти', 'url_name': 'login'},
 ]
 
 
