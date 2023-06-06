@@ -1,17 +1,12 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 
 from .forms import AddPostForm
 from .models import Announce, Category
 from .utils import *
-
-# menu = [
-#     {'title': 'О сайте', 'url_name': 'about'},
-#     {'title': 'Добавить объявление', 'url_name': 'add_announce'},
-#     {'title': 'Поиск своих объявлений', 'url_name': 'find_announce'},
-#     {'title': 'Войти', 'url_name': 'login'},
-# ]
 
 
 class BoardHome(DataMixin, ListView):
@@ -29,25 +24,17 @@ def about(request):
     return render(request, 'board/about.html', {'menu': menu, 'title': 'О сайте'})
 
 
-class AddAnnounce(DataMixin, CreateView):
+class AddAnnounce(LoginRequiredMixin, DataMixin, CreateView):
     form_class = AddPostForm
     template_name = 'board/addpage.html'
+    success_url = reverse_lazy('home')  # Переадресация для зарегистрированных
+    login_url = reverse_lazy('home')  # Переадресация для не зарегистрированных
+    raise_exception = True
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)  # получаем контекст уже существующий
         c_def = self.get_user_context(title='Добавление объявления')
         return dict(list(context.items()) + list(c_def.items()))
-
-
-# def add_announce(request):
-#     if request.method == 'POST':
-#         form = AddPostForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('home')
-#     else:
-#         form = AddPostForm()
-#     return render(request, 'board/addpage.html', {'form': form, 'menu': menu, 'title': 'Добавление объявления'})
 
 
 def find_announce(request):
