@@ -1,11 +1,12 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 
-from .forms import AddPostForm, RegisterUserForm
+from .forms import AddPostForm, RegisterUserForm, LoginUserForm
 from .models import Announce, Category
 from .utils import *
 
@@ -42,8 +43,8 @@ def find_announce(request):
     return HttpResponse('Найти объявления')
 
 
-def login(request):
-    return HttpResponse('Добавление объявления')
+# def login(request):
+#     return HttpResponse('Добавление объявления')
 
 
 def pageNotFound(request, exception):
@@ -92,3 +93,26 @@ class RegisterUser(DataMixin, CreateView):
             title='Регистрация'
         )
         return dict(list(context.items()) + list(c_def.items()))
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('home')
+
+
+class LoginUser(DataMixin, LoginView):
+    form_class = LoginUserForm
+    template_name = 'board/login.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Авторизация')
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
