@@ -6,7 +6,6 @@ menu = [
     {'title': 'О сайте', 'url_name': 'about'},
     {'title': 'Добавить объявление', 'url_name': 'add_announce'},
     {'title': 'Поиск своих объявлений', 'url_name': 'find_announce'},
-    # {'title': 'Войти', 'url_name': 'login'},
 ]
 
 
@@ -18,7 +17,7 @@ class DataMixin:
         cats = Category.objects.annotate(Count('announce'))
         user_menu = menu.copy()
         if not self.request.user.is_authenticated:
-            user_menu.pop(1)
+            del user_menu[1:3]
         context['menu'] = user_menu
 
         context['cats'] = cats

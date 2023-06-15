@@ -46,10 +46,6 @@ def find_announce(request):
     return HttpResponse('Найти объявления')
 
 
-# def login(request):
-#     return HttpResponse('Добавление объявления')
-
-
 def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
 
@@ -73,6 +69,8 @@ class AnnounceCategory(DataMixin, ListView):
     allow_empty = False
 
     def get_queryset(self):
+        print('get_queryset')
+        print(self)
         return Announce.objects.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -82,11 +80,12 @@ class AnnounceCategory(DataMixin, ListView):
             title='Категория - ' + str(c.name),
             cat_selected=c.pk
         )
+        print('get_context_data')
+        print(c_def)
         return dict(list(context.items()) + list(c_def.items()))
 
 
 class RegisterUser(DataMixin, CreateView):
-    # form_class = UserCreationForm
     form_class = RegisterUserForm
     template_name = 'board/register.html'
     success_url = reverse_lazy('login')
@@ -120,3 +119,29 @@ class LoginUser(DataMixin, LoginView):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+
+class AnnounceAuthor(DataMixin, ListView):
+    model = Announce
+    template_name = 'board/index.html'
+    context_object_name = 'posts'  # сюда помещаются данные взятые из Announce
+    # allow_empty = False
+
+    def get_queryset(self):
+        print('get_queryset')
+        print(self)
+        # return Announce.objects.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
+        # return Announce.objects.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
+        # return Announce.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)  # получаем контекст уже существующий
+        # c = Category.objects.get(slug=self.kwargs['cat_slug'])
+        # c_def = self.get_user_context(
+        #     title='Категория - ' + str(c.name),
+        #     cat_selected=c.pk
+        # )
+        print('get_context_data')
+        # print(c_def)
+        # return dict(list(context.items()) + list(c_def.items()))
+        return dict(list(context.items()))
